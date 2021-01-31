@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "90556633-a854-4880-8d97-315acc11f289",
+		"name": "Hodlberg",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authorized API Call",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const SECRET = pm.environment.get('apiSecret');",
+							"const TIMESTAMP = new Date().getTime();",
+							"let PATH = pm.request.url.path?pm.request.url.path[0]:'';",
+							"PATH = '/' + PATH",
+							"const METHOD = pm.request.method;",
+							"",
+							"function signature(TIMESTAMP, METHOD, PATH) {",
+							"    const requestData = TIMESTAMP + METHOD + PATH;",
+							"    console.log(requestData);",
+							"    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(requestData, SECRET));",
+							"}",
+							"",
+							"pm.environment.set(\"timestamp\", TIMESTAMP);",
+							"pm.environment.set(\"signature\", signature(TIMESTAMP, METHOD, PATH));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"type": "text",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "x-hodlberg-signature",
+						"type": "text",
+						"value": "{{signature}}"
+					},
+					{
+						"key": "x-hodlberg-timestamp",
+						"type": "text",
+						"value": "{{timestamp}}"
+					}
+				],
+				"url": {
+					"raw": "tokenapi.hodlberg.com/{{tokenID}}",
+					"host": [
+						"tokenapi",
+						"hodlberg",
+						"com"
+					],
+					"path": [
+						"{{tokenID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - GET",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const SECRET = pm.environment.get('apiSecret');",
+							"const TIMESTAMP = new Date().getTime();",
+							"const BODY = '';",
+							"let PATH = pm.request.url.path?pm.request.url.path[0]:'';",
+							"PATH = '/' + PATH",
+							"const METHOD = pm.request.method;",
+							"",
+							"function signature(TIMESTAMP, METHOD, PATH, BODY) {",
+							"    const requestData = TIMESTAMP + METHOD + PATH + BODY;",
+							"    console.log(requestData);",
+							"    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(requestData, SECRET));",
+							"}",
+							"",
+							"pm.environment.set(\"timestamp\", TIMESTAMP);",
+							"pm.environment.set(\"signature\", signature(TIMESTAMP, METHOD, PATH, BODY));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"type": "text",
+						"value": "{{apiKey}}"
+					},
+					{
+						"key": "x-hodlberg-signature",
+						"type": "text",
+						"value": "{{signature}}"
+					},
+					{
+						"key": "x-hodlberg-timestamp",
+						"type": "text",
+						"value": "{{timestamp}}"
+					}
+				],
+				"url": {
+					"raw": "auth.hodlberg.com/",
+					"host": [
+						"auth",
+						"hodlberg",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - POST",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const SECRET = pm.environment.get('apiSecret');",
+							"const TIMESTAMP = new Date().getTime();",
+							"let PATH = pm.request.url.path?pm.request.url.path[0]:'';",
+							"PATH = '/' + PATH",
+							"const METHOD = pm.request.method;",
+							"",
+							"function signature(TIMESTAMP, METHOD, PATH) {",
+							"    const requestData = TIMESTAMP + METHOD + PATH;",
+							"    console.log(requestData);",
+							"    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(requestData, SECRET));",
+							"}",
+							"",
+							"pm.environment.set(\"timestamp\", TIMESTAMP);",
+							"pm.environment.set(\"signature\", signature(TIMESTAMP, METHOD, PATH));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{apiKey}}",
+						"type": "text"
+					},
+					{
+						"key": "x-hodlberg-signature",
+						"value": "{{signature}}",
+						"type": "text"
+					},
+					{
+						"key": "x-hodlberg-timestamp",
+						"value": "{{timestamp}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"signature\": {{USER_SIGNED_MESSAGE}},\n    \"timestamp\": {{timestamp}},\n    \"address\": {{USER_PUBLIC_ADDRESS}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "auth.hodlberg.com/",
+					"host": [
+						"auth",
+						"hodlberg",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
